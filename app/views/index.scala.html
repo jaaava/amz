@@ -1,24 +1,31 @@
-@(keyword: String)(list :List[String], page :Integer, cat :String)
+@(keyword: String, list :Map[String, List[String]], page :Integer, cat :String)
 
 @main("Welcome to Play 2.0") {
-<form action="/find" method="get">
-    <select name=cat>
-        <option value="Books">Books</option>
-        <option value="Baby" >Baby</option>
-        <option value="Shoes">Shoes</option>
-        <option value="Error">Error</option>
-    </select>
-    <input type="text" name="keyword">
-    <input type="hidden" name="page" value="1">
-    <input type="submit">
-</form>
+    <form action="/find" method="get">
+        <select name=cat>
+            <option value="Books">Books</option>
+            <option value="Baby">Baby</option>
+            <option value="Shoes">Shoes</option>
+            <option value="Error">Error</option>
+        </select>
+        <input type="text" name="keyword">
+        <input type="hidden" name="page" value="1">
+        <input type="submit">
+    </form>
+<div id="info"> </div>
+    <input type="button" value="<--" onclick='prev()'>
+    <input type="button" value="-->" onclick='next()'>
+
     @if(list != null){
-        @for(i <- 0 to 9){
-            @if(i < list.size()){
-                @list.get(i) <br />
+        <div id="result">
+            @for(i <- 0 to 9){
+                <img src='@list.get("images").get(i)'>@list.get("titles").get(i) <br>
             }
-        }
-        <a href="/find?keyword=@keyword&page=@{page-1}&cat=@cat"><<-</a>
-        <a href="/find?keyword=@keyword&page=@{page+1}&cat=@cat">->></a>
+        </div>
+        <a href="/find?cat=@cat&keyword=@keyword&page=@{page-1}"><<-</a>
+        <a href="/find?cat=@cat&keyword=@keyword&page=@{page+1}">->></a>
+
+        <div id="targetNext" style="display: none;"></div>
+        <div id="targetPrev" style="display: none;"></div>
     }
 }

@@ -23,6 +23,7 @@ package models;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,7 +60,7 @@ public class ItemLookupSample {
      */
     private static final String ENDPOINT = "ecs.amazonaws.com";
 
-    public static List<String> find(String find, Integer page, String category) {
+    public static List<String> find(String find, Integer page, String category, String findFor) {
         /*
          * Set up the signed requests helper 
          */
@@ -86,12 +87,12 @@ public class ItemLookupSample {
         params.put("Keywords", find);
         params.put("SearchIndex", category);
         params.put("ItemPage", page.toString());
-        params.put("ResponseGroup", "Small");
+        params.put("ResponseGroup", "Medium");
 
         requestUrl = helper.sign(params);
         System.out.println("Signed Request is \"" + requestUrl + "\"");
 
-        response = fetchRequest(requestUrl);
+        response = fetchRequest(requestUrl, findFor);
 
         Iterator respIter = response.iterator();
         while (respIter.hasNext()) {
@@ -105,17 +106,24 @@ public class ItemLookupSample {
      * title from the XML.
      */
 
-    private static List<String> fetchRequest(String requestUrl) {
+    private static List<String> fetchRequest(String requestUrl, String findFor) {
         List<String> response = new ArrayList<String>();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(requestUrl);
+
+            //Node imageNode = new CorrectNode("URL", new String[]{"SwatchImage", "ImageSet", "ImageSets", "Item"}).getNode();
+
+
             for (int i = 0; i < 10; i++) {
-                Node titleNode = doc.getElementsByTagName("Title").item(i);
-                Node authorNode = doc.getElementsByTagName("Author").item(i);
-                response.add(i, titleNode.getTextContent()); // index not mandatory
-                //response.put("Author", authorNode.getTextContent());
+
+                NodeList tagElement = doc.getElementsByTagName(findFor);
+                Node node = new CorrectNode("URL", new String[]{"SwatchImage", "ImageSet", "ImageSets", "Item"}).checkNode(tagElement).getNode();
+
+                String nodeText = imageNode.getNodeValue();
+                response.add(i, nodeText); // index not mandatory
+
             }
 
         } catch (Exception e) {
@@ -123,5 +131,4 @@ public class ItemLookupSample {
         }
         return response;
     }
-
 }
