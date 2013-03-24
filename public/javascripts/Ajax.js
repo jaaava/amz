@@ -16,7 +16,7 @@ function getURLparams() {
 var nextData = "";
 var prevData = "";
 
-loadBoth()
+//loadBoth()
 function loadAjaxNext() {
     document.getElementById("info").innerHTML = "_";
     if(nextData = ""){ page++; }
@@ -30,7 +30,7 @@ function loadAjaxPrev() {
     if(prevData = ""){ page--; }
     $("#targetPrev").load("http://localhost:9000/find?cat=" + cat + "&keyword=" + keyword + "&page=" + (page) + " #result", function () {
         prevData = this.innerHTML;
-        document.getElementById("info").innerHTML += ":" + (page-1) + " laetud";
+        document.getElementById("info").innerHTML += ":" + (page - 1) + " laetud";
     });
 }
 

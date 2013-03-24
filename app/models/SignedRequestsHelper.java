@@ -21,30 +21,19 @@
 
 package models;
 
-import java.io.UnsupportedEncodingException;
+//import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TimeZone;
-import java.util.TreeMap;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-//import org.apache.commons.codec.binary.*;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * This class contains all the logic for signing requests
@@ -55,50 +44,53 @@ public class SignedRequestsHelper {
      * All strings are handled as UTF-8
      */
     private static final String UTF8_CHARSET = "UTF-8";
-
     /**
      * The HMAC algorithm required by Amazon
      */
     private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
-
     /**
      * This is the URI for the service, don't change unless you really know
      * what you're doing.
      */
     private static final String REQUEST_URI = "/onca/xml";
-
     /**
      * The sample uses HTTP GET to fetch the response. If you changed the sample
-     * to use HTTP POST instead, change the value below to POST. 
+     * to use HTTP POST instead, change the value below to POST.
      */
     private static final String REQUEST_METHOD = "GET";
-
     private String endpoint = null;
     private String awsAccessKeyId = null;
     private String awsSecretKey = null;
-
     private SecretKeySpec secretKeySpec = null;
     private Mac mac = null;
 
     /**
+     * The construct is private since we'd rather use getInstance()
+     */
+    private SignedRequestsHelper() {
+    }
+
+    /**
      * You must provide the three values below to initialize the helper.
      *
-     * @param endpoint          Destination for the requests.
-     * @param awsAccessKeyId    Your AWS Access Key ID
-     * @param awsSecretKey      Your AWS Secret Key
+     * @param endpoint       Destination for the requests.
+     * @param awsAccessKeyId Your AWS Access Key ID
+     * @param awsSecretKey   Your AWS Secret Key
      */
     public static SignedRequestsHelper getInstance(
             String endpoint,
             String awsAccessKeyId,
             String awsSecretKey
-    ) throws IllegalArgumentException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException
-    {
-        if (null == endpoint || endpoint.length() == 0)
-        { throw new IllegalArgumentException("endpoint is null or empty"); }
-        if (null == awsAccessKeyId || awsAccessKeyId.length() == 0)
-        { throw new IllegalArgumentException("awsAccessKeyId is null or empty"); }
-        if (null == awsSecretKey || awsSecretKey.length() == 0)
-        { throw new IllegalArgumentException("awsSecretKey is null or empty"); }
+    ) throws IllegalArgumentException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        if (null == endpoint || endpoint.length() == 0) {
+            throw new IllegalArgumentException("endpoint is null or empty");
+        }
+        if (null == awsAccessKeyId || awsAccessKeyId.length() == 0) {
+            throw new IllegalArgumentException("awsAccessKeyId is null or empty");
+        }
+        if (null == awsSecretKey || awsSecretKey.length() == 0) {
+            throw new IllegalArgumentException("awsSecretKey is null or empty");
+        }
 
         SignedRequestsHelper instance = new SignedRequestsHelper();
         instance.endpoint = endpoint.toLowerCase();
@@ -112,11 +104,6 @@ public class SignedRequestsHelper {
 
         return instance;
     }
-
-    /**
-     * The construct is private since we'd rather use getInstance()
-     */
-    private SignedRequestsHelper() {}
 
     /**
      * This method signs requests in hashmap form. It returns a URL that should
@@ -155,24 +142,10 @@ public class SignedRequestsHelper {
     }
 
     /**
-     * This method signs requests in query-string form. It returns a URL that
-     * should be used to fetch the response. The URL returned should not be
-     * modified in any way, doing so will invalidate the signature and Amazon
-     * will reject the request.
-     */
-    public String sign(String queryString) {
-        // let's break the query string into it's constituent name-value pairs
-        Map<String, String> params = this.createParameterMap(queryString);
-
-        // then we can sign the request as before
-        return this.sign(params);
-    }
-
-    /**
      * Compute the HMAC.
      *
-     * @param stringToSign  String to compute the HMAC over.
-     * @return              base64-encoded hmac value.
+     * @param stringToSign String to compute the HMAC over.
+     * @return base64-encoded hmac value.
      */
     private String hmac(String stringToSign) {
         String signature = null;
@@ -192,7 +165,7 @@ public class SignedRequestsHelper {
     /**
      * Generate a ISO-8601 format timestamp as required by Amazon.
      *
-     * @return  ISO-8601 format timestamp.
+     * @return ISO-8601 format timestamp.
      */
     private String timestamp() {
         String timestamp = null;
@@ -206,8 +179,8 @@ public class SignedRequestsHelper {
     /**
      * Canonicalize the query string as required by Amazon.
      *
-     * @param sortedParamMap    Parameter name-value pairs in lexicographical order.
-     * @return                  Canonical form of query string.
+     * @param sortedParamMap Parameter name-value pairs in lexicographical order.
+     * @return Canonical form of query string.
      */
     private String canonicalize(SortedMap<String, String> sortedParamMap) {
         if (sortedParamMap.isEmpty()) {
@@ -236,7 +209,7 @@ public class SignedRequestsHelper {
      * extra replacements.
      *
      * @param s decoded string
-     * @return  encoded string per RFC 3986
+     * @return encoded string per RFC 3986
      */
     private String percentEncodeRfc3986(String s) {
         String out;
@@ -249,47 +222,5 @@ public class SignedRequestsHelper {
             out = s;
         }
         return out;
-    }
-
-    /**
-     * Takes a query string, separates the constituent name-value pairs
-     * and stores them in a hashmap.
-     *
-     * @param queryString
-     * @return
-     */
-    private Map<String, String> createParameterMap(String queryString) {
-        Map<String, String> map = new HashMap<String, String>();
-        String[] pairs = queryString.split("&");
-
-        for (String pair: pairs) {
-            if (pair.length() < 1) {
-                continue;
-            }
-
-            String[] tokens = pair.split("=",2);
-            for(int j=0; j<tokens.length; j++)
-            {
-                try {
-                    tokens[j] = URLDecoder.decode(tokens[j], UTF8_CHARSET);
-                } catch (UnsupportedEncodingException e) {
-                }
-            }
-            switch (tokens.length) {
-                case 1: {
-                    if (pair.charAt(0) == '=') {
-                        map.put("", tokens[0]);
-                    } else {
-                        map.put(tokens[0], "");
-                    }
-                    break;
-                }
-                case 2: {
-                    map.put(tokens[0], tokens[1]);
-                    break;
-                }
-            }
-        }
-        return map;
     }
 }

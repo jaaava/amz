@@ -1,31 +1,59 @@
 @(keyword: String, list :Map[String, List[String]], page :Integer, cat :String)
 
 @main("Welcome to Play 2.0") {
-    <form action="/find" method="get">
-        <select name=cat>
-            <option value="Books">Books</option>
-            <option value="Baby">Baby</option>
-            <option value="Shoes">Shoes</option>
-            <option value="Error">Error</option>
-        </select>
-        <input type="text" name="keyword">
-        <input type="hidden" name="page" value="1">
-        <input type="submit">
-    </form>
-<div id="info"> </div>
-    <input type="button" value="<--" onclick='prev()'>
-    <input type="button" value="-->" onclick='next()'>
+<form action="/find" method="get">
+    <select name=cat>
+        <option value="Appliances">Appliances</option>
+        <option value="MobileApps">Apps for Android</option>
+        <option value="ArtsAndCrafts">Arts, Crafts & Sewing</option>
+        <option value="Automotive">Automotive</option>
+        <option value="Baby">Baby</option>
+        <option value="Beauty">Beauty</option>
+        <option value="Books">Books</option>
+        <option value="Collectibles">Collectibles</option>
+        <option value="Computers">Computers</option>
+        <option value="Electronics">Electronics</option>
+        <option value="HealthPersonalCare">Health & Personal Care</option>
+        <option value="HomeGarden">Home & garden</option>
+        <option value="Kitchen">Kitchen</option>
+        <option value="Industrial">Industrial & Scientific</option>
+        <option value="Jewelry">Jewelry</option>
+        <option value="KindleStore">Kindle Store</option>
+        <option value="Magazines">Magazine Subscriptions</option>
+        <option value="MP3Downloads">MP3 Music</option>
+        <option value="Music">Music</option>
+        <option value="MusicalInstruments">Musical Instruments</option>
+        <option value="OfficeProducts">Office Products</option>
+        <option value="LawnAndGarden">Lawn & Garden</option>
+        <option value="PetSupplies">Pet Supplies</option>
+        <option value="Shoes">Shoes</option>
+        <option value="Software">Software</option>
+        <option value="SportingGoods">Sports & Outdoors</option>
+        <option value="Tools">Tools & Home Improvement</option>
+        <option value="Toys">Toys & Games</option>
+        <option value="VideoGames">Video Games</option>
+        <option value="Watches">Watches</option>
+
+    </select>
+    <input type="text" name="keyword">
+    <input type="hidden" name="page" value="1">
+    <input type="submit">
+</form>
 
     @if(list != null){
+        <div id="info">Pages loaded:</div>
+        <input type="button" value="<--" onclick='changePage(--page)'>
+        <input type="button" value="-->" onclick='changePage(++page)'>
+
         <div id="result">
             @for(i <- 0 to 9){
                 <img src='@list.get("images").get(i)'>@list.get("titles").get(i) <br>
+                <hr>
             }
         </div>
         <a href="/find?cat=@cat&keyword=@keyword&page=@{page-1}"><<-</a>
         <a href="/find?cat=@cat&keyword=@keyword&page=@{page+1}">->></a>
 
-        <div id="targetNext" style="display: none;"></div>
-        <div id="targetPrev" style="display: none;"></div>
+        <div id="target" style="display: none;">Temporary_request_data_here</div>
     }
 }
