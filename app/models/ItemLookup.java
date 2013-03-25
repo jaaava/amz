@@ -103,7 +103,6 @@ public class ItemLookup {
      */
 
     private static List<String> fetchRequest(String requestUrl, String findFor, String[] parents) {
-        System.out.println("------- REQUESTING "+ findFor +" ----------");
         List<String> response = new ArrayList<String>();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -120,7 +119,7 @@ public class ItemLookup {
                 response.add(nodeText);
             }
 
-        } catch (Exception e) {
+        } catch (Exception e) { //todo use something more specific!
             throw new RuntimeException(e);
         }
         return response;

@@ -15,8 +15,8 @@ function getURLparams() {
 
 
 var pageData = new Array();
+pageData[0] = "NULL";
 var tempPage = page + 1;
-
 $(document).ready(function () {
     pageData[0] = document.getElementById("result").innerHTML;
     document.getElementById("info").innerHTML += pageData.length + ", ";
@@ -24,13 +24,11 @@ $(document).ready(function () {
 
 function load() {
     $("#target").load("http://localhost:9000/find?cat=" + cat + "&keyword=" + keyword + "&page=" + (tempPage) + " #result", function () {
-        pageData[pageData.length] = this.innerHTML;
+        pageData.push(this.innerHTML);
+        //alert(this.innerHTML);
         tempPage++;
         document.getElementById("info").innerHTML += pageData.length + ", ";
-        if (tempPage == 11) {
-            alert("done reloading pages!");
-            return;
-        }
+        if (tempPage == 11) return;
         load();
     });
 }

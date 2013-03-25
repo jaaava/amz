@@ -1,6 +1,15 @@
 @(keyword: String, list :Map[String, List[String]], page :Integer, cat :String)
-
 @main("Welcome to Play 2.0") {
+<script type="text/javascript">
+    $(document).ready(function(){
+        load();
+    });
+
+    function submitToLibrary(asin){
+        window.location.replace("/library?asin=" + asin);
+    }
+
+</script>
 <form action="/find" method="get">
     <select name=cat>
         <option value="Appliances">Appliances</option>
@@ -46,14 +55,15 @@
         <input type="button" value="-->" onclick='changePage(++page)'>
 
         <div id="result">
-            @for(i <- 0 to 9){
-                <img src='@list.get("images").get(i)'>@list.get("titles").get(i) <br>
+            @for(i <- 0 to list.get("asins").size() - 1){
+                <button onclick="submitToLibrary('@list.get("asins").get(i)')">Lisa</button><img src='@list.get("images").get(i)'>@list.get("titles").get(i)
+                <br>
                 <hr>
             }
         </div>
         <a href="/find?cat=@cat&keyword=@keyword&page=@{page-1}"><<-</a>
         <a href="/find?cat=@cat&keyword=@keyword&page=@{page+1}">->></a>
 
-        <div id="target" style="display: none;">Temporary_request_data_here</div>
+        <div id="target" style="display: none;">Nothing on this page... weird</div>
     }
 }

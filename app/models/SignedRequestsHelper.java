@@ -123,7 +123,7 @@ public class SignedRequestsHelper {
         // get the canonical form the query string
         String canonicalQS = this.canonicalize(sortedParamMap);
 
-        // create the string upon which the signature is calculated 
+        // add the string upon which the signature is calculated
         String toSign =
                 REQUEST_METHOD + "\n"
                         + this.endpoint + "\n"

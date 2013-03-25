@@ -47,7 +47,9 @@ public final class NodeHelper {
 
     public enum ElementType {
         TITLES("Title", new String[]{"ItemAttributes", "Item"}),
-        IMAGES("URL", new String[]{"SmallImage", "ImageSet", "ImageSets", "Item"});
+        IMAGES("URL", new String[]{"SmallImage", "Item"}), //"ImageSet", "ImageSets"
+        ASINS("ASIN", new String[]{"Item"}); //"ImageSet", "ImageSets"
+
         public final String[] elementParents;
         public final String elementName;
 
