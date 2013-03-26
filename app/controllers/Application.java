@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Application extends Controller {
     private static Map<String, List<String>> perPageRequestData = new HashMap<String, List<String>>();
-    //private static List<List<String>> globalData = new ArrayList<List<String>>();
+    private static List<List<String>> globalData = new ArrayList<List<String>>();
 
     public static Result index() {
         return ok(index.render(null, null, null, null));
@@ -28,9 +28,9 @@ public class Application extends Controller {
             List elements go to ArrayList, because View cannot render them correctly - they are nested.
             NOTE: List can have duplicates.
         */
-        /*globalData.add(titles);
+        globalData.add(titles);
         globalData.add(images);
-        globalData.add(ASINs);*/
+        globalData.add(ASINs);
 
         /*
             List elements go to HashMap, because View can render them correctly
@@ -43,7 +43,7 @@ public class Application extends Controller {
         return ok(index.render(keyword, perPageRequestData, pageNumber, category));
     }
 
-    /*public static Result toLibrary(String asin){
+    public static Result toLibrary(String asin){
         for (int i = 0; i < globalData.size(); i+=3) {
             List<String> asinList = globalData.get(i + 2);
             for (int j = 0; j < asinList.size(); j++) {
@@ -60,9 +60,5 @@ public class Application extends Controller {
         }
 
         return ok(library.render()); // error msg maybe?
-    }*/
-
-    public static Result toLibrary(String asin){
-        return ok();
     }
 }
