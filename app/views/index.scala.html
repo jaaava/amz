@@ -1,10 +1,6 @@
 @(keyword: String, list :Map[String, List[String]], page :Integer, cat :String)
 @main("Welcome to Play 2.0") {
 <script type="text/javascript">
-    $(document).ready(function(){
-        load();
-    });
-
     function submitToLibrary(asin){
         window.location.replace("/library?asin=" + asin);
     }
@@ -55,8 +51,9 @@
         <input type="button" value="-->" onclick='changePage(++page)'>
 
         <div id="result">
-            @for(i <- 0 to list.get("asins").size() - 1){
-                <button onclick="submitToLibrary('@list.get("asins").get(i)')">Lisa</button><img src='@list.get("images").get(i)'>@list.get("titles").get(i)
+            @for(i <- 0 to list.get("images").size() - 1){
+                <button onclick="submitToLibrary('@list.get("asins").get(i)')">Lisa</button>
+                <img src='@list.get("images").get(i)'>@list.get("titles").get(i)
                 <br>
                 <hr>
             }

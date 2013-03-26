@@ -2,7 +2,6 @@ package controllers;
 
 import models.Item;
 import models.ItemLookup;
-import models.NodeHelper;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
@@ -19,10 +18,11 @@ public class Application extends Controller {
     }
 
     public static Result find(String keyword, Integer pageNumber, String category) {
-        System.out.println("------- REQUESTING PAGE ----------");
-        List<String> titles = ItemLookup.find(keyword, pageNumber, category, NodeHelper.ElementType.TITLES);
-        List<String> images = ItemLookup.find(keyword, pageNumber, category, NodeHelper.ElementType.IMAGES);
-        List<String> ASINs = ItemLookup.find(keyword, pageNumber, category, NodeHelper.ElementType.ASINS);
+        System.out.print("------- REQUESTING PAGE ----------");
+        List<String> titles = ItemLookup.find(keyword, pageNumber, category, "Title");
+        List<String> images = ItemLookup.find(keyword, pageNumber, category, "Image");
+        List<String> ASINs = ItemLookup.find(keyword, pageNumber, category, "ASIN");
+        System.out.println("------- DONE ----------");
 
         /*
             List elements go to ArrayList, because View cannot render them correctly - they are nested.
@@ -46,7 +46,7 @@ public class Application extends Controller {
     public static Result toLibrary(String asin){
         for (int i = 0; i < globalData.size(); i+=3) {
             List<String> asinList = globalData.get(i + 2);
-            for (int j = 0; j < asinList.size(); j++) {
+            for (int j = asinList.size() - 1; j >= 0; j--) {
                 if(asinList.get(j).equals(asin)){
                     String title = globalData.get(i + 0).get(j);
                     String image = globalData.get(i + 1).get(j);

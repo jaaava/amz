@@ -62,9 +62,8 @@ public class ItemLookup {
      * 
      */
     private static final String ENDPOINT = "ecs.amazonaws.com";
-    private static boolean shown = false;
 
-    public static List<String> find(String find, Integer page, String category, NodeHelper.ElementType enumElementType) {
+    public static List<String> find(String find, Integer page, String category, String findFor) {
         /*
          * Set up the signed requests helper 
          */
@@ -93,13 +92,8 @@ public class ItemLookup {
 
 
         String requestUrl = helper.sign(params);
-        /*
-            System.out.println();
-            System.out.println(requestUrl);
-            System.out.println();
-        */
 
-        List<String> response = fetchRequest(requestUrl, enumElementType.elementName, enumElementType.elementParents);
+        List<String> response = fetchRequest(requestUrl, findFor);
         return response;
 
     }
@@ -109,26 +103,15 @@ public class ItemLookup {
      */
 
 
-    private static List<String> fetchRequest(String requestUrl, String findFor, String[] parents) {
-        System.out.println();
-        System.out.println();
+    private static List<String> fetchRequest(String requestUrl, String findFor) {
         List<String> response = new ArrayList<String>();
 
-        if (!shown) {
-            System.out.println();
-            System.out.println(requestUrl);
-            System.out.println();
-            //shown = true;
-        }
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(requestUrl);
 
-            NodeHelper.xmlElementIndex = 0; // start parsing XML from n-th element
-
             NodeList itemNodeList = doc.getElementsByTagName("Item");
-            //System.out.println(itemNodeList.getLength());
 
             for (int i = 0; i < itemNodeList.getLength(); i++){
                 Node itemNode = itemNodeList.item(i); // item
@@ -136,15 +119,12 @@ public class ItemLookup {
 
                 for (int j = 0; j < itemChildNodeList.getLength(); j++) {
                     Node itemChildNode = itemChildNodeList.item(j);
-                    //System.out.println("kas hetke Item children on ASIN: " + itemChildNode.getNodeName().equals("ASIN") + " ja otsime ASINIT: " + findFor.equals("ASIN"));
 
                     if(itemChildNode.getNodeName().equals("ASIN") && findFor.equals("ASIN")){
                         response.add(itemChildNode.getTextContent());
-                        //System.out.println(data);
                     }
                     else if(itemChildNode.getNodeName().equals("SmallImage") && findFor.equals("Image")){
                         response.add(itemChildNode.getChildNodes().item(0).getTextContent());
-                        //System.out.println(data);
                     }
                     else if(itemChildNode.getNodeName().equals("ItemAttributes") && findFor.equals("Title")){
                         NodeList itemChildNodes2 = itemChildNode.getChildNodes();
@@ -152,19 +132,18 @@ public class ItemLookup {
                         for (int k = 0; k < itemChildNodes2.getLength(); k++) {
                             if(itemChildNodes2.item(k).getNodeName().equals("Title")){
                                 response.add(itemChildNodes2.item(k).getTextContent());
-                                //System.out.println(data);
                                 break;
                             }
                         }
                     }
                     else {
-                        new RuntimeException("SHOULD NOT BE HERE!");
+                        new RuntimeException("search element/ node does not exist - typo maybe?");
                     }
                 }
             }
 
 
-        } catch (Exception e) { //todo use something more specific!
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return response;

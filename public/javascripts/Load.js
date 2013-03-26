@@ -15,19 +15,21 @@ function getURLparams() {
 
 
 var pageData = new Array();
-pageData[0] = "NULL";
 var tempPage = page + 1;
-$(document).ready(function () {
-    pageData[0] = document.getElementById("result").innerHTML;
-    document.getElementById("info").innerHTML += pageData.length + ", ";
+$(document).ready(function () { // so we don't need to wait for the first page to load from amazon, twice, and take what we already have..
+    pageData[0] = document.getElementById("result").innerHTML; // .. is what we already have
+    document.getElementById("info").innerHTML += pageData.length + ", "; // display some info about loaded pages
+    load(); // start requesting "future" data
 });
 
 function load() {
     $("#target").load("http://localhost:9000/find?cat=" + cat + "&keyword=" + keyword + "&page=" + (tempPage) + " #result", function () {
-        pageData.push(this.innerHTML);
-        alert(this.innerHTML);
+        if(!(this.innerHTML.indexOf("button") == -1)){
+            pageData.push(this.innerHTML);
+            document.getElementById("info").innerHTML += pageData.length + ", ";
+        }
+        //alert(this.innerHTML);
         tempPage++;
-        document.getElementById("info").innerHTML += pageData.length + ", ";
         if (tempPage == 11) return;
         load();
     });
