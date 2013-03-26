@@ -62,6 +62,7 @@ public class ItemLookup {
      * 
      */
     private static final String ENDPOINT = "ecs.amazonaws.com";
+    private static boolean shown = false;
 
     public static List<String> find(String find, Integer page, String category, NodeHelper.ElementType enumElementType) {
         /*
@@ -92,6 +93,11 @@ public class ItemLookup {
 
 
         String requestUrl = helper.sign(params);
+        /*
+            System.out.println();
+            System.out.println(requestUrl);
+            System.out.println();
+        */
 
         List<String> response = fetchRequest(requestUrl, enumElementType.elementName, enumElementType.elementParents);
         return response;
@@ -102,8 +108,18 @@ public class ItemLookup {
      * title from the XML.
      */
 
+
     private static List<String> fetchRequest(String requestUrl, String findFor, String[] parents) {
+        System.out.println();
+        System.out.println();
         List<String> response = new ArrayList<String>();
+
+        if (!shown) {
+            System.out.println();
+            System.out.println(requestUrl);
+            System.out.println();
+            //shown = true;
+        }
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -111,13 +127,42 @@ public class ItemLookup {
 
             NodeHelper.xmlElementIndex = 0; // start parsing XML from n-th element
 
-            for (int i = 0; i < doc.getElementsByTagName("Item").getLength(); i++) {
-                NodeList tagElement = doc.getElementsByTagName(findFor);
-                Node node = new NodeHelper(parents).checkNode(tagElement).getNodeInstance();
+            NodeList itemNodeList = doc.getElementsByTagName("Item");
+            //System.out.println(itemNodeList.getLength());
 
-                String nodeText = node.getTextContent();
-                response.add(nodeText);
+            for (int i = 0; i < itemNodeList.getLength(); i++){
+                Node itemNode = itemNodeList.item(i); // item
+                NodeList itemChildNodeList = itemNode.getChildNodes(); // item children
+
+                for (int j = 0; j < itemChildNodeList.getLength(); j++) {
+                    Node itemChildNode = itemChildNodeList.item(j);
+                    //System.out.println("kas hetke Item children on ASIN: " + itemChildNode.getNodeName().equals("ASIN") + " ja otsime ASINIT: " + findFor.equals("ASIN"));
+
+                    if(itemChildNode.getNodeName().equals("ASIN") && findFor.equals("ASIN")){
+                        response.add(itemChildNode.getTextContent());
+                        //System.out.println(data);
+                    }
+                    else if(itemChildNode.getNodeName().equals("SmallImage") && findFor.equals("Image")){
+                        response.add(itemChildNode.getChildNodes().item(0).getTextContent());
+                        //System.out.println(data);
+                    }
+                    else if(itemChildNode.getNodeName().equals("ItemAttributes") && findFor.equals("Title")){
+                        NodeList itemChildNodes2 = itemChildNode.getChildNodes();
+
+                        for (int k = 0; k < itemChildNodes2.getLength(); k++) {
+                            if(itemChildNodes2.item(k).getNodeName().equals("Title")){
+                                response.add(itemChildNodes2.item(k).getTextContent());
+                                //System.out.println(data);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        new RuntimeException("SHOULD NOT BE HERE!");
+                    }
+                }
             }
+
 
         } catch (Exception e) { //todo use something more specific!
             throw new RuntimeException(e);

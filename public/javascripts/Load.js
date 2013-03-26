@@ -25,7 +25,7 @@ $(document).ready(function () {
 function load() {
     $("#target").load("http://localhost:9000/find?cat=" + cat + "&keyword=" + keyword + "&page=" + (tempPage) + " #result", function () {
         pageData.push(this.innerHTML);
-        //alert(this.innerHTML);
+        alert(this.innerHTML);
         tempPage++;
         document.getElementById("info").innerHTML += pageData.length + ", ";
         if (tempPage == 11) return;

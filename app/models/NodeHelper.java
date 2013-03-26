@@ -16,6 +16,9 @@ public final class NodeHelper {
     public NodeHelper(String[] parents) {
         this.parents = parents;
     }
+    public NodeHelper(){
+
+    }
 
     public NodeHelper checkNode(NodeList tagElement) {
         for (int i = xmlElementIndex; i < tagElement.getLength(); i++) {
@@ -47,7 +50,7 @@ public final class NodeHelper {
 
     public enum ElementType {
         TITLES("Title", new String[]{"ItemAttributes", "Item"}),
-        IMAGES("URL", new String[]{"SmallImage", "Item"}), //"ImageSet", "ImageSets"
+        IMAGES("Image", new String[]{"SmallImage", "Item"}), //"ImageSet", "ImageSets"
         ASINS("ASIN", new String[]{"Item"}); //"ImageSet", "ImageSets"
 
         public final String[] elementParents;
@@ -57,5 +60,18 @@ public final class NodeHelper {
             this.elementName = elementName;
             this.elementParents = elementParents;
         }
+    }
+
+    public void find(Node itemInFocus, String findFor){
+        NodeList nodeList = itemInFocus.getChildNodes(); // Item nodes
+
+        for (int i = 0; i < nodeList.getLength(); i++) { // Item nodes length
+            //System.out.print(nodeList.item(i));
+            Node itemNode = nodeList.item(i);
+            System.out.print("itemNode: " + itemNode);
+            System.out.println(" --- ASIN:" + itemNode.getFirstChild());
+        }
+        System.out.println();
+        System.out.println("-------");
     }
 }

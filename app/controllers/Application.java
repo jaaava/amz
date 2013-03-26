@@ -12,14 +12,14 @@ import java.util.*;
 
 public class Application extends Controller {
     private static Map<String, List<String>> perPageRequestData = new HashMap<String, List<String>>();
-    private static List<List<String>> globalData = new ArrayList<List<String>>();
+    //private static List<List<String>> globalData = new ArrayList<List<String>>();
 
     public static Result index() {
         return ok(index.render(null, null, null, null));
     }
 
     public static Result find(String keyword, Integer pageNumber, String category) {
-        //System.out.println("------- REQUESTING PAGE ----------");
+        System.out.println("------- REQUESTING PAGE ----------");
         List<String> titles = ItemLookup.find(keyword, pageNumber, category, NodeHelper.ElementType.TITLES);
         List<String> images = ItemLookup.find(keyword, pageNumber, category, NodeHelper.ElementType.IMAGES);
         List<String> ASINs = ItemLookup.find(keyword, pageNumber, category, NodeHelper.ElementType.ASINS);
@@ -28,11 +28,9 @@ public class Application extends Controller {
             List elements go to ArrayList, because View cannot render them correctly - they are nested.
             NOTE: List can have duplicates.
         */
-        globalData.add(titles);
+        /*globalData.add(titles);
         globalData.add(images);
-        globalData.add(ASINs);
-
-        //System.out.println(Arrays.toString(ASINs.toArray()));
+        globalData.add(ASINs);*/
 
         /*
             List elements go to HashMap, because View can render them correctly
@@ -45,20 +43,11 @@ public class Application extends Controller {
         return ok(index.render(keyword, perPageRequestData, pageNumber, category));
     }
 
-    public static Result toLibrary(String asin){
-
-        /*System.out.println("Searching for:" + asin);
-        System.out.println("globalData_elems_length:" + globalData.size());
-        System.out.println("globalData_elems_title_length:" + globalData.get(0).size());
-        System.out.println("globalData_elems_asins_length:" + globalData.get(2).size());*/
-
+    /*public static Result toLibrary(String asin){
         for (int i = 0; i < globalData.size(); i+=3) {
             List<String> asinList = globalData.get(i + 2);
             for (int j = 0; j < asinList.size(); j++) {
-                //System.out.println(globalData.get(i + 2).get(j)); // asins
-
                 if(asinList.get(j).equals(asin)){
-                    //System.out.println("------ ASIN MATCH!");
                     String title = globalData.get(i + 0).get(j);
                     String image = globalData.get(i + 1).get(j);
                     //System.out.println("title:" + title + " image:" + image);
@@ -71,5 +60,9 @@ public class Application extends Controller {
         }
 
         return ok(library.render()); // error msg maybe?
+    }*/
+
+    public static Result toLibrary(String asin){
+        return ok();
     }
 }
