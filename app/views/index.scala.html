@@ -1,8 +1,8 @@
-@(keyword: String, list :Map[String, List[String]], page :Integer, cat :String)
+@(keyword: String, page :Integer, cat :String)
 @main("Welcome to Play 2.0") {
 <script type="text/javascript">
-    function submitToLibrary(asin){
-        window.location.replace("/library?asin=" + asin);
+    function submitToLibrary(asin, page){
+        window.location.replace("/library?asin=" + asin + "&page=" + page);
     }
 
 </script>
@@ -44,23 +44,21 @@
     <input type="hidden" name="page" value="1">
     <input type="submit">
 </form>
-
-    @if(list != null){
+@if(!(keyword == null) && !(page == null) && !(cat == null)){
         <div id="info">Pages loaded:</div>
         <input type="button" value="<--" onclick='changePage(--page)'>
         <input type="button" value="-->" onclick='changePage(++page)'>
-
         <div id="result">
-            @for(i <- 0 to list.get("images").size() - 1){
-                <button onclick="submitToLibrary('@list.get("asins").get(i)')">Lisa</button>
-                <img src='@list.get("images").get(i)'>@list.get("titles").get(i)
-                <br>
-                <hr>
+                @for(i <- 1 to 10){
+                    <button onclick="submitToLibrary('@DataHelper.getElem(page, DataHelper.Elem.Asin).get(i - 1)', page)">Lisa</button>
+                    <img src='@DataHelper.getElem(page, DataHelper.Elem.Image).get(i - 1)'>@DataHelper.getElem(page, DataHelper.Elem.Title).get(i - 1)
+                    <br>
+                    <hr>
+                }
             }
         </div>
-        <a href="/find?cat=@cat&keyword=@keyword&page=@{page-1}"><<-</a>
-        <a href="/find?cat=@cat&keyword=@keyword&page=@{page+1}">->></a>
+        <!--<a href="/find?cat=cat&keyword=keyword&page={page-1}"><<-</a>
+        <a href="/find?cat=cat&keyword=keyword&page={page+1}">->></a>-->
 
         <div id="target" style="display: none;">Nothing on this page... weird</div>
-    }
 }

@@ -63,7 +63,7 @@ public class ItemLookup {
      */
     private static final String ENDPOINT = "ecs.amazonaws.com";
 
-    public static List<String> find(String find, Integer page, String category, String findFor) {
+    public static ArrayList<String> find(String find, Integer page, String category, String findFor) {
         /*
          * Set up the signed requests helper 
          */
@@ -93,7 +93,7 @@ public class ItemLookup {
 
         String requestUrl = helper.sign(params);
 
-        List<String> response = fetchRequest(requestUrl, findFor);
+        ArrayList<String> response = fetchRequest(requestUrl, findFor);
         return response;
 
     }
@@ -103,8 +103,8 @@ public class ItemLookup {
      */
 
 
-    private static List<String> fetchRequest(String requestUrl, String findFor) {
-        List<String> response = new ArrayList<String>();
+    private static ArrayList<String> fetchRequest(String requestUrl, String findFor) {
+        ArrayList<String> response = new ArrayList<String>();
 
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
