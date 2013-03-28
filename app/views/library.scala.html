@@ -1,8 +1,9 @@
 @main("Welcome to Play 2.0") {
+    <button onclick="javascript: window.location.replace('/');">Otsime veel midagi!</button><br><br>
+
     @for(i <- 0 to Item.all().size() - 1){
         <img src='@Item.all().get(i).image'> @Item.all().get(i).title
         <br>
         <hr>
     }
-
 }

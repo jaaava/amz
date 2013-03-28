@@ -1,4 +1,8 @@
-@(keyword: String, page :Integer, cat :String)
+@(  keyword: String,
+    page :Integer,
+    cat :String,
+    resp :String
+)
 @main("Welcome to Play 2.0") {
 <script type="text/javascript">
     function submitToLibrary(asin, page){
@@ -44,6 +48,7 @@
     <input type="hidden" name="page" value="1">
     <input type="submit">
 </form>
+        @resp
 @if(!(keyword == null) && !(page == null) && !(cat == null)){
         <div id="info">Pages loaded:</div>
         <input type="button" value="<--" onclick='changePage(--page)'>

@@ -4,6 +4,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
+import java.util.Iterator;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,7 @@ public class Item extends Model {
             Long.class, Item.class);
 
     @Required
+	@Id
     public Long id;
     @Required
     public String title;
@@ -28,8 +30,17 @@ public class Item extends Model {
         return find.all();
     }
 
-    public static void add(Item item) {
+    public static boolean add(Item item) {
+        Iterator itemIter = Item.all().iterator();
+        while(itemIter.hasNext()){
+            Item itemInFocus = (Item)itemIter.next();
+            if(itemInFocus.title.equals(item.title)){
+                return false;
+            }
+        }
+
         item.save();
+        return true;
     }
 
     public static void delete(Long id) {

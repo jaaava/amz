@@ -8,14 +8,15 @@ import play.mvc.Result;
 import views.html.index;
 import views.html.library;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Application extends Controller {
     // for grouping elements (Titles, Images, ASINs)
     private static ArrayList<ArrayList<String>> perRequestData = new ArrayList<ArrayList<String>>();
 
     public static Result index() {
-        return ok(index.render(null, null, null));
+        return ok(index.render(null, null, null, null));
     }
 
     public static Result find(String keyword, Integer pageNumber, String category) {
@@ -35,20 +36,24 @@ public class Application extends Controller {
         DataHelper.add(--pageNumber, perRequestData);
         //perRequestData.clear();
         // Let's render the page
-        return ok(index.render(keyword, pageNumber, category));
+        return ok(index.render(keyword, pageNumber, category, null));
     }
 
-    public static Result toLibrary(String asin, Integer page){
-        for (int i = 0; i < perRequestData.size(); i+=3) {
+    public static Result toLibrary(String asin, Integer page) {
+        for (int i = 0; i < perRequestData.size(); i += 3) {
             List<String> asinList = perRequestData.get(i + 2);
             for (int j = asinList.size() - 1; j >= 0; j--) {
-                if(asinList.get(j).equals(asin)){
+                if (asinList.get(j).equals(asin)) {
                     String title = perRequestData.get(i + 0).get(j);
                     String image = perRequestData.get(i + 1).get(j);
                     //System.out.println("title:" + title + " image:" + image);
-                    Item.add(new Item(title, image));
-                    perRequestData.clear(); // kustuta olemasolevad andmed!
-                    return ok(library.render());
+                    if (Item.add(new Item(title, image))) {
+                        //Item.add(new Item(title, image));
+                        perRequestData.clear(); // kustuta olemasolevad andmed!
+                        return ok(library.render());
+                    }else {
+                        return badRequest(index.render(null, null, null, "You already have this item in your library!"));
+                    }
                 }
             }
             System.out.println();
