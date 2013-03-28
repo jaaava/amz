@@ -52,7 +52,7 @@ public class Application extends Controller {
                         perRequestData.clear(); // kustuta olemasolevad andmed!
                         return ok(library.render());
                     }else {
-                        return badRequest(index.render(null, null, null, "You already have this item in your library!"));
+                        return ok(index.render(null, null, null, "You already have this item in your library!"));
                     }
                 }
             }

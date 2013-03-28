@@ -8,6 +8,9 @@
     function submitToLibrary(asin, page){
         window.location.replace("/library?asin=" + asin + "&page=" + page);
     }
+    function viewTheLibrary(){
+
+    }
 
 </script>
 <form action="/find" method="get">
@@ -48,7 +51,10 @@
     <input type="hidden" name="page" value="1">
     <input type="submit">
 </form>
-        @resp
+        @if(!(resp == null)){
+            @resp
+            <button onclick="javascript: window.location.replace('/library?asin=VIEW_ALL' + '&page=' + 0);">See what you have in your library</button>
+        }
 @if(!(keyword == null) && !(page == null) && !(cat == null)){
         <div id="info">Pages loaded:</div>
         <input type="button" value="<--" onclick='changePage(--page)'>
