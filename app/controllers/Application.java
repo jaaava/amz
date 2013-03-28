@@ -5,9 +5,7 @@ import models.Item;
 import models.ItemLookup;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
-import views.html.library;
-
+import views.html.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +14,7 @@ public class Application extends Controller {
     private static ArrayList<ArrayList<String>> perRequestData = new ArrayList<ArrayList<String>>();
 
     public static Result index() {
+        //return ok(library.render()); // error msg maybe?
         return ok(index.render(null, null, null, null));
     }
 
@@ -47,11 +46,11 @@ public class Application extends Controller {
                     String title = perRequestData.get(i + 0).get(j);
                     String image = perRequestData.get(i + 1).get(j);
                     //System.out.println("title:" + title + " image:" + image);
-                    if (Item.add(new Item(title, image))) {
+                    if (Item.add(new Item(title, image))) { // if item ISN'T already in item-library
                         //Item.add(new Item(title, image));
                         perRequestData.clear(); // kustuta olemasolevad andmed!
                         return ok(library.render());
-                    }else {
+                    } else {
                         return ok(index.render(null, null, null, "You already have this item in your library!"));
                     }
                 }

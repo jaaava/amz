@@ -53,8 +53,8 @@
 </form>
         @if(!(resp == null)){
             @resp
-            <button onclick="javascript: window.location.replace('/library?asin=VIEW_ALL' + '&page=' + 0);">See what you have in your library</button>
         }
+        <button onclick="javascript: window.location.replace('/library?asin=VIEW_ALL' + '&page=' + 0);">See what you have in your library</button>
 @if(!(keyword == null) && !(page == null) && !(cat == null)){
         <div id="info">Pages loaded:</div>
         <input type="button" value="<--" onclick='changePage(--page)'>
