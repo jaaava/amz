@@ -22,4 +22,7 @@ Võimalik, et annab teha Modelisse accessor, mida View siis kasutaks, saates get
 1) Tegin Modelisse helper-klassi, millega on võrdlemisi mugav View-st andmeid pärida.<br>
 2) "üleliigne" list on ja jääb sisse. See grupeerib kenasti elemente per-page(Titles, Images, Asins)<br>
 3) XML-st otsimine on tehtud normaalsemaks, aga koledus on jäänud - if'de rägastik.<br>
-<br>
+<br><br><br>
+
+Tahaks veel palju muuta...
+====
